@@ -59,7 +59,7 @@ func New() (http.Handler, func(h http.Handler) (func(c *gin.Context))) {
 // a handler, and wraps it into a Gin middleware handler.
 //
 // This is just a convenience wrapper around New.
-func Wrap(f func(h http.Handler) http.Handler) (func(c *gin.Context) {
+func Wrap(f func(h http.Handler) http.Handler) (func(c *gin.Context)) {
 	next, adapter := New()
 	return adapter(f(next))
 }
