@@ -40,9 +40,9 @@ import (
 //
 // If the middleware does not call the handler it's wrapping, Abort is
 // called on the Gin context.
-func New() (http.Handler, func(h http.Handler) gin.HandlerFunc) {
+func New() (http.Handler, func(h http.Handler) (func(c *gin.Context))) {
 	nextHandler := new(connectHandler)
-	makeGinHandler := func(h http.Handler) gin.HandlerFunc {
+	makeGinHandler := func(h http.Handler) (func(c *gin.Context)) {
 		return func(c *gin.Context) {
 			state := &middlewareCtx{ctx: c}
 			ctx := context.WithValue(c.Request.Context(), nextHandler, state)
@@ -59,7 +59,7 @@ func New() (http.Handler, func(h http.Handler) gin.HandlerFunc) {
 // a handler, and wraps it into a Gin middleware handler.
 //
 // This is just a convenience wrapper around New.
-func Wrap(f func(h http.Handler) http.Handler) gin.HandlerFunc {
+func Wrap(f func(h http.Handler) http.Handler) (func(c *gin.Context) {
 	next, adapter := New()
 	return adapter(f(next))
 }
